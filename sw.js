@@ -7,29 +7,49 @@ self.addEventListener('install', function(event) {
   event.waitUntil(
     caches.open(staticCacheName).then(function(cache) {
       return cache.addAll([
-        './',
-        './index.html',
-        './restaurant.html',
-        './data/restaurants.json',
-        './js/main.js',
-        './js/dbhelper.js',
-        './js/restaurant_info.js',
-        './css/style.css',
-        './css/responsive.css',
-        './restaurant.html?id=1',
-        './restaurant.html?id=2',
-        './restaurant.html?id=3',
-        './restaurant.html?id=4',
-        './restaurant.html?id=5',
-        './restaurant.html?id=6',
-        './restaurant.html?id=7',
-        './restaurant.html?id=8',
-        './restaurant.html?id=9',
-        './restaurant.html?id=10'
+          '/index.html',
+          '/restaurant.html',
+          '/css/styles.css',
+          '/css/responsive.css',
+          '/js/dbhelper.js',
+          '/js/main.js',
+          '/js/restaurant_info.js',
+          '/data/restaurants.json',
+          '/images/1-200_small_1x.jpg',
+          '/images/2-200_small_1x.jpg',
+          '/images/3-200_small_1x.jpg',
+          '/images/4-200_small_1x.jpg',
+          '/images/5-200_small_1x.jpg',
+          '/images/6-200_small_1x.jpg',
+          '/images/7-200_small_1x.jpg',
+          '/images/8-200_small_1x.jpg',
+          '/images/9-200_small_1x.jpg',
+          '/images/10-200_small_1x.jpg',
+          '/images/1-400_mid_2x.jpg',
+          '/images/2-400_mid_2x.jpg',
+          '/images/3-400_mid_2x.jpg',
+          '/images/4-400_mid_2x.jpg',
+          '/images/5-400_mid_2x.jpg',
+          '/images/6-400_mid_2x.jpg',
+          '/images/7-400_mid_2x.jpg',
+          '/images/8-400_mid_2x.jpg',
+          '/images/9-400_mid_2x.jpg',
+          '/images/10-400_mid_2x.jpg',
+          '/images/1-100pc_large_2x.jpg',
+          '/images/2-100pc_large_2x.jpg',
+          '/images/3-100pc_large_2x.jpg',
+          '/images/4-100pc_large_2x.jpg',
+          '/images/5-100pc_large_2x.jpg',
+          '/images/6-100pc_large_2x.jpg',
+          '/images/7-100pc_large_2x.jpg',
+          '/images/8-100pc_large_2x.jpg',
+          '/images/9-100pc_large_2x.jpg',
+          '/images/10-100pc_large_2x.jpg'
       ]);
     })
   );
 });
+
 
 self.addEventListener('activate', function(event) {
   event.waitUntil(
@@ -46,11 +66,18 @@ self.addEventListener('activate', function(event) {
   );
 });
 
-self.addEventListener('fetch', (event) => {
+self.addEventListener('fetch', event => {
   event.respondWith(
-    caches
-      .match(event.request)
-      .then(response => response || fetch(event.request)),
+    // Add cache.put to cache images on each fetch
+    caches.match(event.request).then(response => {
+      return response || fetch(event.request).then(fetchResponse => {
+        return caches.open(staticCacheName).then(cache => {
+          cache.put(event.request, fetchResponse.clone());
+          return fetchResponse;
+        });
+      });
+    })
+    
   );
 });
 

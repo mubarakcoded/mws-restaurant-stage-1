@@ -14,9 +14,8 @@
     "grunt-mkdir": "~0.1.2",
     "grunt-contrib-copy": "~0.8.0"
   },
-  "author": "Mubarak Auwal",
-  "license": "ISC",
   "dependencies": {
-    "grunt-mws-restaurant-stage-1": "^0.1.6"
+    "gm": "^1.23.1",
+    "grunt-responsive-images": "^0.1.6"
   }
 }
