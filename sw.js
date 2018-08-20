@@ -66,10 +66,11 @@ self.addEventListener('activate', function(event) {
   );
 });
 
+
 self.addEventListener('fetch', event => {
   event.respondWith(
     // Add cache.put to cache images on each fetch
-    caches.match(event.request).then(response => {
+     caches.match(event.request, { 'ignoreSearch': true }).then(response => {
       return response || fetch(event.request).then(fetchResponse => {
         return caches.open(staticCacheName).then(cache => {
           cache.put(event.request, fetchResponse.clone());
