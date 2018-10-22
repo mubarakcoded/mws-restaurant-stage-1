@@ -1,0 +1,9 @@
+{
+  "name": "Udacity Restaurant reviews for MWS",
+  "short_name": "Restaurant",
+  "theme_color": "#aaaaaa",
+  "background_color": "#fdfdfd",
+  "display": "standalone",
+  "scope": "/",
+  "start_url": "/index.html"
+}
