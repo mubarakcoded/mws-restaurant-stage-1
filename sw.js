@@ -1,7 +1,9 @@
+importScripts( '/js/idb.js' );
 const staticCacheName = 'restaurant-app-v1';
 var allCaches = [
   staticCacheName
 ];
+
 
 self.addEventListener('install', function(event) {
   event.waitUntil(
@@ -13,6 +15,7 @@ self.addEventListener('install', function(event) {
           '/css/responsive.css',
           '/js/dbhelper.js',
           '/js/main.js',
+          '/js/idb.js',
           '/js/restaurant_info.js',
           '/data/restaurants.json',
           '/images/1-200_small_1x.jpg',

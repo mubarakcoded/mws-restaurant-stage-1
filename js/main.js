@@ -150,6 +150,10 @@ fillRestaurantsHTML = (restaurants = self.restaurants) => {
   restaurants.forEach(restaurant => {
     ul.append(createRestaurantHTML(restaurant));
   });
+  const el = document.querySelectorAll('#restaurants-list picture');
+	for (var i=0;i<el.length;i+=1){
+		el[i].style.display = 'none';
+	}
   addMarkersToMap();
 }
 
