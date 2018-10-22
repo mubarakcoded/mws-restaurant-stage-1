@@ -1,41 +1,5 @@
-/**
- * Common database helper functions.
- */
-
-// if (!window.indexedDB) {
-//   window.alert("Your browser doesn't support a stable version of IndexedDB.")
-// } 
-
-
-// //this is indexedDB section and the functions interacting with indexedDB
-// let db;
-// const dbName = ' restaurant-app';
-// const storeName = 'restaurants';
-// //opening our indexed database declared as dbName version 1
-// const request = window.indexedDB.open(dbName, 1)
-
-// request.onerror = function(event) {
-//   alert("an error had occured");
-// };
-// request.onsuccess = function(event) {
-//   console.log(dbName, 'IndexedDB opened');
-//   db = request.result;
-//   console.log("success: "+ db);
-// };
-// request.onupgradeneeded = function(event) {
-//   const db = event.target.result;
-//   //Create Object store
-//   var objectStore ;
-//     objectStore = db.createObjectStore('all-restaurants', { keyPath: 'id' });
-//     objectStore = db.createObjectStore('all-reviews', { keyPath: 'id' });
-//     objectStore = db.createObjectStore('offline-reviews', { keyPath: 'updatedAt' });
-//   console.log("Object Store created");
-// }
 
 class DBHelper {
-
-  
-
   
   /**
    * Database URL.
@@ -61,19 +25,6 @@ class DBHelper {
 		}
 	}
 
-
-
-  // static fetchRestaurants(callback) {
-  //   fetch(DBHelper.DATABASE_URL)
-  //     .then(response => {
-  //       const restaurants = response.json();
-  //       return restaurants;
-  //     })
-  //     .then(restaurants => callback(null, restaurants))
-  //     .catch(err => callback(err, null));
-  //   }
-    /*
-
   // /**
   //  * Fetch all restaurants.
   //  */
@@ -85,10 +36,8 @@ class DBHelper {
 			// 1. Look for restaurants in IDB
 			const tx = db.transaction('all-restaurants');
 			const store = tx.objectStore('all-restaurants');
-			store.getAll().then(results => {
-       
-
-				if (!results ||results.length === 0) {
+			return store.getAll().then(restaurants => {
+				if (!restaurants || restaurants.length === 0) {
 					// if No restaurants in IDB found
 					// then Fetch restaurants from network
 					fetch(`${DBHelper.DATABASE_URL}`)
@@ -112,8 +61,9 @@ class DBHelper {
 					});
 				} else {
           
-					// Restaurants found in IDB
-					callback(null, results);
+          // Restaurants found in IDB
+          
+					callback(null, restaurants);
 				}
 			})
 			
