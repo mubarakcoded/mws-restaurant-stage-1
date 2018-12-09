@@ -69,7 +69,47 @@ class DBHelper {
 			
 		});
   }
-  
+
+  /**
+	 * Fetch all reviews for a restaurant
+	 */
+	static fetchRestaurantReviews(restaurant, callback) {
+		DBHelper.dbPromise.then(db => {
+			if (!db) return;
+			// Check reviews in the IDB
+			const tx = db.transaction('all-reviews');
+			const store = tx.objectStore('all-reviews');
+			store.getAll().then(results => {
+				if (results && results.length > 0) {
+					// Use reviews from IDB
+					callback(null, results);
+				} else {
+					// if no reviews in the IDB, fetch from the network
+					fetch(`http://localhost:1337/reviews/?restaurant_id=${restaurant.id}`)
+					.then(response => {
+						return response.json();
+					})
+					.then(reviews => {
+						this.dbPromise.then(db => {
+							if (!db) return;
+							// Add reviews to IDB
+							const tx = db.transaction('all-reviews', 'readwrite');
+							const store = tx.objectStore('all-reviews');
+							reviews.forEach(review => {
+								store.put(review);
+							})
+						});
+						// Continue with reviews from network
+						callback(null, reviews);
+					})
+					.catch(error => {
+						// Unable to fetch reviews from network
+						callback(error, null);
+					})
+				}
+			})
+		});
+  }
 
   /**
    * Fetch a restaurant by its ID.
@@ -206,6 +246,83 @@ class DBHelper {
       marker.addTo(newMap);
     return marker;
   } 
+
+
+  static submitReview(data) {
+		console.log(data);
+		data['updatedAt'] = new Date().getTime();
+		data['createdAt'] = new Date().getTime();
+		
+		return fetch(`http://localhost:1337/reviews`, {
+			body: JSON.stringify(data), 
+			cache: 'no-cache',
+			credentials: 'same-origin', 
+			headers: {
+				'content-type': 'application/json'
+			},
+			method: 'POST',
+			mode: 'cors', 
+			redirect: 'follow', 
+			referrer: 'no-referrer',
+		})
+		.then(response => {
+			response.json()
+				.then(data => {
+					this.dbPromise.then(db => {
+						if (!db) return;
+						// Put fetched reviews into IDB
+						const tx = db.transaction('all-reviews', 'readwrite');
+						const store = tx.objectStore('all-reviews');
+						store.put(data);
+					});
+					return data;
+				})
+		})
+		.catch(error => {
+			// Network offline.
+			 
+			data['updatedAt'] = new Date().getTime();
+			data['createdAt'] = new Date().getTime();
+			console.log(data);
+			
+			this.dbPromise.then(db => {
+				if (!db) return;
+				// Put fetched reviews into IDB
+				const tx = db.transaction('offline-reviews', 'readwrite');
+				const store = tx.objectStore('offline-reviews');
+				store.put(data);
+				console.log('Review stored offline in IDB');
+			});
+			return;
+		});
+	}
+
+	static submitOfflineReviews() {
+		DBHelper.dbPromise.then(db => {
+			if (!db) return;
+			const tx = db.transaction('offline-reviews');
+			const store = tx.objectStore('offline-reviews');
+			store.getAll().then(offlineReviews => {
+				console.log(offlineReviews);
+				offlineReviews.forEach(review => {
+					DBHelper.submitReview(review);
+				})
+				DBHelper.clearOfflineReviews();
+			})
+		})
+	}
+
+	static clearOfflineReviews() {
+		DBHelper.dbPromise.then(db => {
+			const tx = db.transaction('offline-reviews', 'readwrite');
+			const store = tx.objectStore('offline-reviews').clear();
+		})
+		return;
+	}
+
+
+
+
   /* static mapMarkerForRestaurant(restaurant, map) {
     const marker = new google.maps.Marker({
       position: restaurant.latlng,
@@ -217,5 +334,5 @@ class DBHelper {
     return marker;
   } */
 
-}
+
 
