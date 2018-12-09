@@ -11,3 +11,19 @@
   } else {
     console.log('Service workers are not supported.');
   }
+  // Request a one-off sync:
+navigator.serviceWorker.ready.then(function (swRegistration) {    
+  return swRegistration.sync.register('serverSync');
+});
+
+function serverOnline() {
+  console.log('Server online');
+  DBHelper.submitOfflineReviews();
+}
+
+function serverOffline() {
+  console.log('Server offline');
+}
+
+window.addEventListener('online', serverOnline);
+window.addEventListener('offline', serverOffline);
