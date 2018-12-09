@@ -20,6 +20,7 @@ body {
 	margin: 0;
 	position:relative;
 }
+
 ul, li {
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 10pt;
@@ -327,4 +328,31 @@ nav h1 a {
 #restaurant-hours td:first-child {
   font-weight: bold;
   vertical-align: top;
+}
+.btn{
+  
+  display: inline-block;
+  background: #e5ae49;
+  color: #fff !important;
+  font-family: "Lato", sans-serif;
+  font-weight: 700;
+  text-transform: uppercase !important;
+  line-height: 49px !important;
+  padding: 0 31px !important;
+  border-radius: 5px;
+  position: relative;
+
+}
+.form{
+  width: 100%;
+  border: 1px solid #e1e1e1;
+  padding: 0 15px;
+  height: 50px;
+  transition: all 0.3s;
+}
+.txta{
+  width: 100%;
+  border: 1px solid #e1e1e1;
+  padding: 0 15px;
+  transition: all 0.3s;
 }
