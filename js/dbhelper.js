@@ -79,7 +79,7 @@ class DBHelper {
 			// Check reviews in the IDB
 			const tx = db.transaction('all-reviews');
 			const store = tx.objectStore('all-reviews');
-			store.getAll().then(results => {
+		  store.getAll().then(results => {   
 				if (results && results.length > 0) {
 					// Use reviews from IDB
 					callback(null, results);
@@ -290,7 +290,7 @@ class DBHelper {
 				// Put fetched reviews into IDB
 				const tx = db.transaction('offline-reviews', 'readwrite');
 				const store = tx.objectStore('offline-reviews');
-				store.put(data);
+        store.put(data);
 				console.log('Review stored offline in IDB');
 			});
 			return;
@@ -310,7 +310,18 @@ class DBHelper {
 				DBHelper.clearOfflineReviews();
 			})
 		})
-	}
+  }
+
+  // static submitOff() {
+	// 	DBHelper.dbPromise.then(db => {
+	// 		if (!db) return;
+	// 		  const tx = db.transaction('all-reviews', 'readwrite');
+	// 			const store = tx.objectStore('all-reviews');
+  //       store.put(data);
+	// 			console.log('All Review updated in IDB');
+			
+	// 	})
+  // }
 
 	static clearOfflineReviews() {
 		DBHelper.dbPromise.then(db => {
@@ -321,18 +332,33 @@ class DBHelper {
 	}
 
 
-
-
-  /* static mapMarkerForRestaurant(restaurant, map) {
-    const marker = new google.maps.Marker({
-      position: restaurant.latlng,
-      title: restaurant.name,
-      url: DBHelper.urlForRestaurant(restaurant),
-      map: map,
-      animation: google.maps.Animation.DROP}
-    );
-    return marker;
-  } */
-
-
-
+  static toggleFavorite(restaurant, isFavorite) {
+		fetch(`${DBHelper.DATABASE_URL}/${restaurant.id}/?is_favorite=${isFavorite}`, {
+			method: 'PUT'
+		})
+		.then(response => {
+			return response.json();
+		})
+		.then(data => {
+			DBHelper.dbPromise.then(db => {
+				if (!db) return;
+				const tx = db.transaction('all-restaurants', 'readwrite');
+				const store = tx.objectStore('all-restaurants');
+				store.put(data)
+			});
+			return data;
+		})
+		.catch(error => {
+			restaurant.is_favorite = isFavorite;
+			DBHelper.dbPromise.then(db => {
+				if (!db) return;
+				const tx = db.transaction('all-restaurants', 'readwrite');
+				const store = tx.objectStore('all-restaurants');
+				store.put(restaurant);
+			}).catch(error => {
+				console.log(error);
+				return;
+			});
+		});
+	}
+}
