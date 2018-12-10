@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <!-- Normalize.css for better cross-browser consistency -->
   <link rel="stylesheet" src="//normalize-css.googlecode.com/svn/trunk/normalize.css" />
   <!-- Main CSS file -->
@@ -15,11 +16,11 @@
   <!-- Beginning header -->
   <header>
     <!-- Beginning nav -->
-    <nav>
+    <nav aria-label="breadcrumb" role="navigation">
       <h1><a href="/">Restaurant Reviews</a></h1>
     </nav>
     <!-- Beginning breadcrumb -->
-    <ul id="breadcrumb" role="navigation" aria-label="breadcrumb">
+    <ul id="breadcrumb">
       <li><a href="/" tabindex="0">Home</a></li>
     </ul>
     <!-- End breadcrumb -->
@@ -36,7 +37,8 @@
     <!-- End map -->
     <!-- Beginning restaurant -->
     <section id="restaurant-container" aria-labelledby="restaurant-name">
-      <h1 id="restaurant-name"></h1>
+      <h2 id="restaurant-name"></h2>
+      <p><input type="checkbox" id="favourite"> <label for="favourite">Favorite</label></p>
       <img id="restaurant-img">
       <p id="restaurant-cuisine"></p>
       <p id="restaurant-address"><address></address></p>
